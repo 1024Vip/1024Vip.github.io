@@ -25,7 +25,7 @@ class ChartManager {
 
 
 const chartManager = new ChartManager();
-const urlTitle = 'http://localhost:5000';//接口地址
+const urlTitle = 'http://116.204.20.40:5000';//接口地址
 var currentLoadingDiv = null; // 当前正在显示的 loading div
 var loadingCounter = 0;  // 计数器，用于追踪当前正在进行的请求数量
 
