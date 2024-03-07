@@ -1,0 +1,374 @@
+@charset "utf-8";
+
+/* CSS Document */
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box
+}
+
+body {
+    color: #fff;
+    font-size: 16px;
+    background: #033c76 url(../images/bg.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+@font-face {
+    font-family: electronicFont;
+    src: url(../font/DS-DIGIT.TTF)
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+li {
+    list-style-type: none;
+}
+
+i {
+    margin: 0px;
+    padding: 0px;
+    text-indent: 0px;
+}
+
+img {
+    border: none;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+a.active,
+a:focus {
+    outline: none !important;
+    text-decoration: none;
+}
+
+ol,
+ul,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    margin: 0
+}
+
+a:hover {
+    color: #06c;
+    text-decoration: none !important
+}
+
+.text-w {
+    color: #ffe400
+}
+
+.text-d {
+    color: #ff6316
+}
+
+.text-s {
+    color: #14e144
+}
+
+.text-b {
+    color: #07e5ff
+}
+
+
+/* .head{position: relative; height: 90px; margin: 0 15px; padding-right: 60px;display: flex;
+}
+.head h1{  font-size: 30px; letter-spacing: -2px; text-align: center; line-height: 90px; padding-right: 55px; color: #daf9ff;}
+
+.head .time{position: absolute; right: 0; line-height: 90px; top: 0;} */
+
+
+
+.head h1 {
+    text-align: center;
+    margin: 0 auto;
+    line-height: 110px;
+}
+
+.head_left {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 100px;
+    /* display: flex; */
+    left: -5px;
+    text-align: center;
+
+}
+
+.head_left div {
+    /* margin: 0 10px; */
+    /* line-height: 90px; */
+}
+
+.yqlist {
+    margin: 10px 0;
+}
+
+.clearfix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+    /* 使用 grid 上下居中 */
+    grid-template-rows: 1fr;
+    justify-content: center;
+    gap: 30px;
+}
+
+/* .yqlist li{float: left; width: 50%; padding:10px 0; text-align: center;} */
+.yq {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 5px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-family: electronicFont;
+    color: #fff32b;
+}
+
+.yqlist li span {
+    opacity: .6;
+    font-size: 14px;
+}
+
+.yq:before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: "";
+    background: url(../images/img1.png) center center;
+    border-radius: 100px;
+    background-size: 100% 100%;
+    opacity: .3;
+    left: 0;
+    top: 0;
+    animation: myfirst2 15s infinite linear;
+}
+
+.yq:after {
+    position: absolute;
+    width: 86%;
+    background: url(../images/img2.png) center center;
+    border-radius: 100px;
+    background-size: 100% 100%;
+    opacity: .3;
+    height: 86%;
+    content: "";
+    left: 7%;
+    top: 7%;
+    animation: myfirst 15s infinite linear;
+}
+
+
+@keyframes myfirst {
+    to {
+        transform: rotate(-360deg)
+    }
+}
+
+@keyframes myfirst2 {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    min-height: 635px;
+    /* background-color:#152a59; */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    padding: 0px;
+    margin: 0px;
+    font-family: "微软雅黑";
+    color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+.mapc {
+    background: url(../images/bg3.png) no-repeat center center;
+    background-size: 100% 100%
+}
+
+.wrapper {
+    position: absolute;
+    top: 110px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 555px;
+}
+
+.container-fluid {
+    height: 100%;
+    min-height: 100%;
+    margin: 0 10px 0 10px;
+}
+
+.row {
+    /*margin-left:-7px;margin-right:-8px;*/
+    display: grid;
+    grid-template-columns: 2.5fr 5fr 2.5fr;
+    gap: 20px;
+}
+
+/* .row>div {padding-left:7px;padding-right:8px;} */
+.xpanel-wrapper {
+    padding-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.xpanel-wrapper-1 {
+    height: 100%;
+}
+
+.xpanel-wrapper-1-2 {
+    height: 50%;
+}
+
+.xpanel-wrapper-1-3 {
+    height: 50%;
+}
+
+.xpanel-wrapper-2-1 {
+    height: 90%;
+}
+
+.xpanel-wrapper-2-2 {
+    height: 10%;
+}
+
+.xpanel-wrapper-2-3 {
+    height: 33.3333%;
+}
+
+.xpanel-wrapper-2-4 {
+    height: 66.6666%;
+}
+
+.xpanel-wrapper-3-1 {
+    height: 40%;
+}
+
+.xpanel-wrapper-3-2 {
+    height: 60%;
+}
+
+
+.xpanel {
+    /* padding:15px; */
+    height: 100%;
+    min-height: 30px;
+    /* background:url("../img/panel.png") center no-repeat; */
+    background-size: 100% 100%;
+    box-sizing: border-box;
+    border: 1px solid rgba(20, 160, 241, 0.5);
+    box-shadow: inset 0 0 10px rgba(105, 185, 231, 0.4);
+    /* 默认阴影效果 */
+    transition: box-shadow 0.8s;
+    /* 添加过渡效果 */
+    margin-bottom: 12px;
+    /* position: relative; */
+    border-radius: 10px;
+}
+
+.xpanel:hover {
+    box-shadow: inset 0 0 40px rgba(105, 185, 231, 0.4);
+    /* 悬停时的阴影效果 */
+}
+
+/* tool */
+.fill-h {
+    height: 100%;
+    min-height: 100%;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-bg {
+    background: none !important;
+}
+
+.no-border {
+    border: 0 !important;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+
+.tit {
+    padding: 10px 10px 10px 25px;
+    border-bottom: 1px solid rgba(7, 118, 181, .7);
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+}
+
+.tit:before,
+.tit01:before {
+    position: absolute;
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: rgba(22, 214, 255, .9);
+    box-shadow: 0 0 5px rgba(22, 214, 255, .9);
+    border-radius: 10px;
+    left: 10px;
+    top: 18px;
+}
+
+.xpanel-wrapper {
+    position: relative;
+    /* 将 xpanel 设置为相对定位 */
+}
+
+#divchoic,
+#switch {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    width: 80px;
+    color: white;
+}

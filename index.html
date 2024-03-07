@@ -1,0 +1,581 @@
+﻿<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<title>广西旅游景点评论可视化大屏</title>
+	<link rel="stylesheet" href="layui/css/layui.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+	<script src="js/echarts.min.js"></script>
+	<script src="js/wordcount.min.js"></script>
+	<!-- 引入广西地图 -->
+	<script type="text/javascript" src="js/guangxi.js"></script>
+	<script type="text/javascript" src="js/jsTool.js"></script>
+	<script type="text/javascript" src="layui/layui.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+	<style>
+		.head {
+			display: grid;
+			grid-template-columns: 1fr 5fr 1fr;
+			background-image: url(./images/4.png);
+			background-size: 100%;
+			background-repeat: no-repeat;
+			/* background: antiquewhite; */
+		}
+	</style>
+	<script>
+		function delay() {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+		// 第一个 script 标签内的代码
+		async function fetchData(fun) {
+			try {
+				// localStorage读取 access_token
+				var access_token = localStorage.getItem('access_token');
+				// 如果没有access_token则跳转到登录页面
+				if (access_token == null) {
+					// 页面变为空白
+					document.body.innerHTML = '';
+					window.location.href = 'login.html';
+					return; // 在跳转后终止函数执行
+				}
+
+				const res = await ajaxPromise('/protected', {}, 'POST', { 'Authorization': 'Bearer ' + access_token });
+				console.log(res);
+				document.querySelector('#outLogin').innerHTML = res.logged_in_as;
+
+				// 创建退出按钮
+				const logoutButton = document.createElement('i');
+				logoutButton.title = '退出';
+				logoutButton.className = 'layui-icon layui-icon-logout';
+				// 鼠标悬停 更改鼠标样式
+				logoutButton.style.cursor = 'pointer';
+				logoutButton.style.display = 'block';
+				logoutButton.style.fontSize = '20px';
+				// 鼠标悬停 更改颜色 红色
+				logoutButton.onmouseover = () => {
+					logoutButton.style.color = 'red';
+				}
+				// 鼠标移出 更改颜色 白色
+				logoutButton.onmouseout = () => {
+					logoutButton.style.color = 'white';
+				}
+				logoutButton.addEventListener('click', () => {
+					if (!confirm('确定要退出吗？')) {
+						return;
+					}
+					ajaxPromise('/logout', {}, 'POST', { 'Authorization': 'Bearer ' + access_token }).then((res) => {
+						localStorage.removeItem('access_token'); // 清除本地存储的 access_token
+						window.location.href = 'login.html'; // 跳转到登录页面
+					}).catch((err) => {
+						console.error(err);
+					});
+					// 在点击退出按钮时执行退出操作，比如清除登录信息等
+					// 这里只是一个示例，你需要根据你的需求来实现退出功能
+				});
+
+				// 将退出按钮添加到页面中
+				document.querySelector('#outLogin').appendChild(logoutButton);
+				fun()
+			} catch (err) {
+				if (err?.responseJSON?.msg == void 0) {
+					console.error(err);
+					if (err?.status == 0) {
+						// 页面变为空白
+						document.body.innerHTML = '';
+						// 重新跳转到登录页面
+						window.location.href = 'login.html';
+						return;
+					}
+					return;
+				}
+				// 页面变为空白
+				document.body.innerHTML = '';
+				console.error(err);
+				localStorage.removeItem('access_token');
+				// 重新跳转到登录页面
+				window.location.href = 'login.html';
+				alert(err?.responseJSON?.msg);
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<div class="head">
+		<div class="no-bg"></div>
+		<div class="no-bg">
+			<h1>广西旅游景点评论可视化</h1>
+		</div>
+		<div class="head_left no-bg">
+			<div class="time" id="showTime">2099/9/29 19:00:00</div>
+			<div id="outLogin" style="font-size: 14px;"></div>
+		</div>
+	</div>
+	<div class="wrapper">
+		<div class="container-fluid">
+			<div class="row fill-h">
+				<div class="col-lg-3 fill-h">
+					<div class="xpanel-wrapper xpanel-wrapper-1-2">
+						<div class="xpanel no-padding no-bg">
+							<!-- <div class="tit">模块标题</div> -->
+							<div class="fill-h" id="id1"></div>
+							<div class="fill-h" id="id2"></div>
+							<div id="switch">
+								<div class="layui-form">
+									<input type="checkbox" name="agreement" title="好评|差评" lay-skin="switch"
+										lay-filter="word-checkbox-filter" checked>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="xpanel-wrapper xpanel-wrapper-1-2">
+						<div class="xpanel no-padding no-bg">
+							<div class="fill-h" id="id_tmp">
+							
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 fill-h">
+					<div class="xpanel-wrapper xpanel-wrapper-3-2 mapc">
+						<div class="xpanel no-padding no-bg">
+							<div class="fill-h" id="id3"></div>
+						</div>
+					</div>
+					<div class="xpanel-wrapper xpanel-wrapper-3-1">
+						<div class="xpanel no-padding no-bg">
+							<div class="fill-h" id="time_line"></div>
+							<div id="divchoic" style="color: white;">
+								<div class="layui-form ">
+									<select lay-filter="timeline-select-filter">
+										<option value="y">年</option>
+										<option value="m">月</option>
+										<option value="w">周</option>
+										<option value="d">天</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 fill-h">
+					<div class="xpanel-wrapper xpanel-wrapper-2-3">
+						<div class="xpanel">
+							<div class="fill-h" id="id4"></div>
+						</div>
+					</div>
+					<div class="xpanel-wrapper xpanel-wrapper-2-3">
+						<div class="xpanel">
+							<div class="fill-h" id="id5"></div>
+						</div>
+					</div>
+					<div class="xpanel-wrapper xpanel-wrapper-2-3">
+						<div class="xpanel">
+							<div class="fill-h" id="id6"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+
+		var t = null;
+		t = setTimeout(time, 1000);//開始运行
+		function time() {
+			clearTimeout(t);//清除定时器
+			dt = new Date();
+			var y = dt.getFullYear();
+			var mt = dt.getMonth() + 1;
+			var day = dt.getDate();
+			var h = dt.getHours();//获取时
+			var m = dt.getMinutes();//获取分
+			var s = dt.getSeconds();//获取秒
+			document.getElementById("showTime").innerHTML = y + "/" + addZero(mt) + "/" + addZero(day) + " " + addZero(h) + ":" + addZero(m) + ":" + addZero(s) + "";
+			t = setTimeout(time, 1000); //设定定时器，循环运行     
+		}
+
+		const main = () => {
+			layui.use(() => {
+				var form = layui.form;
+				var layer = layui.layer;
+				// select 事件
+				form.on('select(timeline-select-filter)', function (data) {
+					var elem = data.elem; // 获得 select 原始 DOM 对象
+					var value = data.value; // 获得被选中的值
+					// 过期时间   1/24 为 1小时 ....
+					Cookies.set('choic_cookie', value, { expires: 1 });
+					getTimeLine();
+				});
+				// checkbox 事件
+				form.on('switch(word-checkbox-filter)', function (data) {
+					var elem = data.elem; // 获得 select 原始 DOM 对象
+					var value = data.value; // 获得被选中的值
+					var checked = data.elem.checked;
+					console.log(checked);
+
+
+					if (checked) {
+						$('#id1').show();
+						$('#id2').hide();
+						let chartInstance = $('#id1').attr('_echarts_instance_')
+						echarts.getInstanceById(chartInstance).resize()
+					} else {
+						$('#id1').hide();
+						$('#id2').show();
+						let chartInstance = $('#id2').attr('_echarts_instance_')
+						echarts.getInstanceById(chartInstance).resize()
+					}
+				});
+				// 获取 choic_cookie 的值
+				var choic_cookie = Cookies.get('choic_cookie');
+				var switchWord_cookie = Cookies.get('switchWord_cookie');
+				if (choic_cookie == void 0) {
+					choic_cookie = 'y';
+				}
+				// 设置 select 的选中项为 choic_cookie 的值
+				$('select[lay-filter="timeline-select-filter"]').val(choic_cookie);
+				// 使用 layui 的 form.render() 方法重新渲染表单
+				layui.form.render('select');
+				// goodOrbad
+				// 设置隐藏
+				$('#switch').hide();
+				$('#divchoic').hide();
+
+				$('#id2').hide();
+				// 当移入到 id1 时显示 移出时隐藏 淡入淡出 并且 悬浮在switch不要隐藏
+
+				// 当鼠标移入 #id1 或 #switch 时不隐藏 #switch 元素
+				$('#id1,#id2, #switch').on('mouseover', () => {
+					$('#switch').stop().fadeIn(500);
+				});
+
+				// 当鼠标移出 #id1 或 #switch 时隐藏 #switch 元素
+				$('#id1,#id2, #switch').on('mouseout', () => {
+					$('#switch').stop().fadeOut(500);
+				});
+
+				// 当鼠标移入 #time_line 或 #divchoic 时不隐藏 #divchoic 元素
+				$('#time_line, #divchoic').on('mouseover', () => {
+					$('#divchoic').stop().fadeIn(500);
+				});
+
+				// 当鼠标移出 #time_line 或 #divchoic 时隐藏 #divchoic 元素
+				$('#time_line, #divchoic').on('mouseout', () => {
+					$('#divchoic').stop().fadeOut(500);
+				});
+
+
+
+
+
+
+				// 创建图表管理器实例
+				const chartManager = new ChartManager();
+
+				// 获取词频统计数据
+				const getMaplist = async () => {
+					let elementStr = 'id3';
+
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					ajaxPromise('/getCommentCount', {}, 'POST')
+						.then((datas) => {
+							// console.log(datas);
+							guangxiMap(elementStr, datas);
+						})
+						.catch((err) => {
+							console.error(err);
+						}).finally(() => {
+							removeLoadingOverlay(loadingOverlay, funResize);
+						})
+				}
+				getMaplist();
+
+				const guangxiMap = (elementStr, datas) => {
+					// 注册地图
+					echarts.registerMap('guangxi', {});
+
+					let guangxiCharts = echarts.init(document.getElementById(elementStr));
+					chartManager.addChart(guangxiCharts);
+
+					// 配置图表
+					let option = {
+						title: {
+							text: '广西地图',
+							// subtext: '广西地图示例',
+							textStyle: {
+								color: 'white' // 设置标题颜色为白色
+							},
+							left: 'center'
+						},
+						roam: true, // 启用缩放和拖拽功能
+						tooltip: {
+							trigger: 'item'
+						},
+						grid: { // 设置地图的默认大小
+							width: '10%', // 地图宽度占父容器宽度的百分比
+							height: '80%', // 地图高度占父容器高度的百分比
+							left: '10%', // 地图相对于父容器左边距的百分比
+							top: '10%' // 地图相对于父容器顶部边距的百分比
+						},
+						visualMap: {
+							min: 0,
+							max: 50000,
+							left: 'left',
+							top: 'bottom',
+							// text: ['高', '低'], // 文本，默认为数值文本
+							textStyle: {
+								color: 'white' // 设置图例颜色为白色
+							},
+							calculable: true
+						},
+						series: [
+							{
+								name: '广西',
+								type: 'map',
+								mapType: 'guangxi', // 自定义扩展图表类型
+								label: {
+									"show": true,
+									"margin": 8
+								},
+								map: "广西",
+								data: datas,
+								// 自定义名称映射
+								nameMap: {
+									// '城市名': '显示的名称'
+								}
+							}
+						]
+					};
+
+					// 使用刚指定的配置项和数据显示图表。
+					guangxiCharts.setOption(option);
+					// 移除事件
+					guangxiCharts.off('click');
+
+					// 点击事件
+					guangxiCharts.on('click', (params) => {
+						// console.log(`点击了【${params.name}】`)
+						// 从新窗口打开indexCity.html
+						window.open(`indexCity.html?city=${params.name}`, '_blank');
+					})
+				}
+				// guangxiMap("id3",[])
+
+				// 获取词云图数据 
+				const getWordCloud = async (num, city = void 0) => {
+
+					let elementStr1 = 'id1';
+					let elementStr2 = 'id2';
+					let tmp_lay1 = createLoadingOverlay(elementStr1);
+					let tmp_lay2 = createLoadingOverlay(elementStr2);
+					let loadingOverlay1 = tmp_lay1[0], funResize1 = tmp_lay1[1]
+					let loadingOverlay2 = tmp_lay2[0], funResize2 = tmp_lay2[1]
+					let params = {
+						'maxNum': num,
+						'city': city
+					}
+					params = delete_params(params);
+					ajaxPromise('/getWordCloud', params, 'POST').then((datas) => {
+
+						// console.log(datas);
+						let image_base64 = datas['img']
+						// 创建图片
+						let maskImage = new Image()
+						maskImage.src = image_base64
+						// 在图片加载完成后执行后续操作
+						maskImage.onload = () => {
+							// 获取xpanel的宽高
+							let xpanel = document.getElementsByClassName('xpanel-wrapper-1-2')[0];
+							let xpanelWidth = xpanel.offsetWidth;
+							let xpanelHeight = xpanel.offsetHeight;
+							// console.log(xpanelWidth, xpanelHeight);
+
+							// 设置图片宽高
+							maskImage.width = xpanelWidth;
+							maskImage.height = xpanelHeight;
+
+							// 打印图片像素
+							// console.log(maskImage.width, maskImage.height);
+
+
+							// 执行 wordCloud 函数
+							draw_wordCloud('好评词云图', elementStr1, datas['good'], maskImage);
+							draw_wordCloud('差评词云图', elementStr2, datas['bad'], maskImage);
+						}
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay1, funResize1);
+						removeLoadingOverlay(loadingOverlay2, funResize2);
+					});
+				}
+				getWordCloud(100);
+
+
+				// 绘制多列柱状图
+				const getBar = async (city) => {
+					let elementStr = 'id4';
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					let params = {
+						'city': city
+					}
+					params = delete_params(params);
+					ajaxPromise('/getScores', params, 'POST').then((res) => {
+						// console.log(res);
+						draw_bar('广西旅游景点分数', elementStr, res['dimensions'], res['sources']);
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay, funResize);
+					});
+				}
+				getBar()
+
+				// 获取饼图数据
+				const getPie = async (city = null) => {
+					let elementStr = 'id5';
+
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					let params = {
+						'city': city
+					}
+					params = delete_params(params);
+					ajaxPromise('/getPie_sentiment', params, 'POST').then((res) => {
+						// console.log(res);
+						draw_pie('广西旅游景点情感分布', elementStr, res);
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay, funResize);
+					});
+				}
+				getPie()
+
+
+
+
+				// 关系图
+				const getRelation = async (city = null, num = 9) => {
+					let elementStr = 'id6';
+
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					let params = {
+						'city': city,
+						'num': num
+					}
+					params = delete_params(params);
+					ajaxPromise('/getRelation', params, 'POST').then((res) => {
+						// console.log(res);
+						draw_relation('广西旅游景点评论关系图', elementStr, res, num);
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay, funResize);
+					});
+				}
+				getRelation()
+
+				// 时间序列图
+				const getTimeLine = async (city = null) => {
+					let period = $('select[lay-filter="timeline-select-filter"]').val();
+					let elementStr = 'time_line';
+					$('#' + elementStr).empty();
+					// 清除属性  除了 class 和id 不清除
+					$('#' + elementStr).removeAttr('style').removeAttr('_echarts_instance_');
+
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					let params = {
+						'city': city,
+						'period': period // y:年 m:月 w:周 d:日
+					}
+					params = delete_params(params);
+					ajaxPromise('/getTimeLine', params, 'POST').then((res) => {
+						// console.log(res);
+						draw_timeLine('广西旅游景点评论时间序列图', elementStr, res, period);
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay, funResize);
+					});
+				}
+				getTimeLine()
+
+				// 正负面柱形图
+				const getBarSentiment = async (city = null) => {
+					let elementStr = 'id_tmp';
+
+					let tmp_lay = createLoadingOverlay(elementStr);
+					let loadingOverlay = tmp_lay[0], funResize = tmp_lay[1]
+					let params = {
+						'city': city
+					}
+					params = delete_params(params);
+					ajaxPromise('/getBarSentiment', params, 'POST').then((res) => {
+						// console.log(res);
+						draw_barSentiment('广西旅游景点评论正负面柱形图', elementStr, res);
+					}).catch((err) => {
+						console.error(err);
+					}).finally(() => {
+						removeLoadingOverlay(loadingOverlay, funResize);
+					});
+				}
+				getBarSentiment() 
+
+				
+			});
+
+
+		}
+
+
+
+
+
+		// 调用fetchData函数来执行异步操作
+		fetchData(main);
+
+
+		$(() => {
+			$(window).load(() => {
+
+
+
+
+			});
+		})
+
+
+
+
+		function getTest() {
+			$.ajax({
+				type: 'GET',
+				url: urlTitle + '/testGet',
+				dataType: 'json',
+				data: { 'name': 'get' },
+				success: function (res) {
+					console.log(res)
+				},
+				error: function (err) {
+					console.log('error\n' + err)
+				}
+			})
+		}
+		// getTest()
+	</script>
+</body>
+
+</html>
