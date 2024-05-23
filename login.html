@@ -2,264 +2,270 @@
 <html>
 
 <head>
-    <title>登录页</title>
-    <style>
-        body {
-            background-color: black;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-        }
+  <title>登录页</title>
+  <style>
+    body {
+      background-color: black;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
 
-        .login-container {
-            width: 300px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            position: relative;
-        }
+    .login-container {
+      width: 300px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+    }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
 
-        input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    input[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
 
-        .loader-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-        }
+    .loader-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 4px solid #3498db;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
-        .alert {
-            position: absolute;
-            /* top: calc(10% + 10px); */
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 20px;
-            background-color: #333;
-            color: white;
-            border-radius: 10px;
-            display: none;
-            transition: top 1s ease;
-            white-space: nowrap;
-        }
+    .alert {
+      position: absolute;
+      /* top: calc(10% + 10px); */
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 20px;
+      background-color: #333;
+      color: white;
+      border-radius: 10px;
+      display: none;
+      transition: top 1s ease;
+      white-space: nowrap;
+    }
 
-        .alert.success {
-            background-color: #4CAF50;
-        }
+    .alert.success {
+      background-color: #4CAF50;
+    }
 
-        .alert.error {
-            background-color: #f44336;
-        }
+    .alert.error {
+      background-color: #f44336;
+    }
 
-        .alert.info {
-            background-color: #007bff;
-        }
-
-
+    .alert.info {
+      background-color: #007bff;
+    }
 
 
-        #earth {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background-color: transparent;
-            background-image: url('earth.png');
-            background-size: cover;
-            border-radius: 50%;
-            animation: rotate 10s linear infinite;
-        }
 
-        @keyframes rotate {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
 
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
+    #earth {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      background-color: transparent;
+      background-image: url('earth.png');
+      background-size: cover;
+      border-radius: 50%;
+      animation: rotate 10s linear infinite;
+    }
 
-        .star {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: white;
-            border-radius: 50%;
-            animation: wave 2s linear infinite;
-        }
+    @keyframes rotate {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
 
-        @keyframes wave {
-            0% {
-                opacity: 0;
-                transform: scale(0);
-            }
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
 
-            30% {
-                opacity: 1;
-                transform: scale(1);
-            }
+    .star {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+      animation: wave 2s linear infinite;
+    }
 
-            100% {
-                opacity: 0;
-                transform: scale(0);
-            }
-        }
-    </style>
-    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-    <script type="text/javascript" src="js/jsTool.js"></script>
+    @keyframes wave {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+
+      30% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+  </style>
+  <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="js/jsTool.js"></script>
 </head>
 
 <body>
-    <div class="login-container">
-        <h1>Login</h1>
-        <form id="login-form" action="#">
-            <input type="text" id="username" placeholder="Username">
-            <br>
-            <input type="password" id="password" placeholder="Password">
-            <br>
-            <input type="submit" value="Login" onclick="submitForm(this,event)">
-            <div class="loader-container" id="loader-container">
-                <div class="loader"></div>
-            </div>
-        </form>
-    </div>
+  <div class="login-container">
+    <h1>Login</h1>
+    <form id="login-form" action="#">
+      <input type="text" id="username" placeholder="Username">
+      <br>
+      <input type="password" id="password" placeholder="Password">
+      <br>
+      <input type="submit" value="Login" onclick="submitForm(this,event)">
+      <div class="loader-container" id="loader-container">
+        <div class="loader"></div>
+      </div>
+    </form>
+  </div>
 
-    <div class="alert" id="alert">
-        Invalid username or password.
-    </div>
-    <script>
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 2 + 's'; // Random animation delay between 0 and 2 seconds
-            document.body.appendChild(star);
-        }
+  <div class="alert" id="alert">
+    Invalid username or password.
+  </div>
+  <script>
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 2 + 's'; // Random animation delay between 0 and 2 seconds
+      document.body.appendChild(star);
+    }
 
 
-        function showLoader() {
-            $('#loader-container').stop().fadeIn();
-        }
+    function showLoader() {
+      $('#loader-container').stop().fadeIn();
+    }
 
-        function hideLoader(msg, className) {
-            $('#loader-container').stop().fadeOut(() => {
-                $('#alert').html(msg).addClass(className).stop().fadeIn();
-            });
-        }
+    function hideLoader(msg, className) {
+      $('#loader-container').stop().fadeOut(() => {
+        $('#alert').html(msg).addClass(className).stop().fadeIn();
+      });
+    }
 
-        function hideAlert(className, callback, timeout = 3000) {
-            setTimeout(() => {
-                $('#alert').stop().fadeOut(() => {
-                    $('#alert').removeClass(className);
-                    if (callback) {
-                        callback();
-                    }
-                });
-            }, timeout);
+    function hideAlert(className, callback, timeout = 3000) {
+      setTimeout(() => {
+        $('#alert').stop().fadeOut(() => {
+          $('#alert').removeClass(className);
+          if (callback) {
+            callback();
+          }
+        });
+      }, timeout);
+    }
+    const submitForm = throttle((elm, event) => {
+      // (elm, event) {
+      event.preventDefault();
+      // 设置为禁用状态
+      showLoader();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (username === '') {
+        hideLoader('用户名不能为空', 'info');
+        hideAlert('info', () => { });
+        return;
+      } else if (password === '') {
+        hideLoader('密码不能为空', 'info');
+        hideAlert('info', () => { });
+        return;
+      }
+      elm.disabled = true;
+      // 设置鼠标样式
+      elm.style.cursor = 'not-allowed';
+      let params = {
+        username: username,
+        password: password
+      }
+      ajaxPromise('/login', params, 'POST').then((res) => {
+        console.log(res);
+        access_token = res?.access_token;
+        if (access_token === undefined || access_token === null || access_token === '') {
+          hideLoader('登录失败', 'error');
+          hideAlert('error', () => { });
+          return;
         }
-        function submitForm(elm, event) {
-            event.preventDefault();
-            // 设置为禁用状态
-            showLoader();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            if (username === '') {
-                hideLoader('用户名不能为空', 'info');
-                hideAlert('info', () => { });
-                return;
-            } else if (password === '') {
-                hideLoader('密码不能为空', 'info');
-                hideAlert('info', () => { });
-                return;
-            }
-            elm.disabled = true;
-            let params = {
-                username: username,
-                password: password
-            }
-            ajaxPromise('/login', params, 'POST').then((res) => {
-                console.log(res);
-                access_token = res?.access_token;
-                if (access_token === undefined || access_token === null || access_token === '') {
-                    hideLoader('登录失败', 'error');
-                    hideAlert('error', () => { });
-                    return;
-                }
-                hideLoader('登录成功', 'success');
-                // 保存token access_token
-                localStorage.setItem('access_token', access_token);
-                hideAlert('success', () => { window.location.href = './index.html'; }, 1111);
-            }).catch((err) => {
-                // hideLoader(err.responseJSON.message, 'error');
-                try {
-                    hideLoader(err.responseJSON.message, 'error');
-                } catch (error) {
-                    console.log(error);
-                    hideLoader('登录失败 error!', 'error');
-                }
-                hideAlert('error', () => { });
-            }).finally(() => {
-                elm.removeAttribute('disabled')
-            })
+        hideLoader('登录成功', 'success');
+        // 保存token access_token
+        localStorage.setItem('access_token', access_token);
+        hideAlert('success', () => { window.location.href = './index.html'; }, 1111);
+        elm.removeAttribute('disabled')
+        elm.style.cursor = 'pointer';
+      }).catch((err) => {
+        // hideLoader(err.responseJSON.message, 'error');
+        try {
+          hideLoader(err.responseJSON.message, 'error');
+        } catch (error) {
+          console.log(error);
+          hideLoader('登录失败 error!', 'error');
         }
-    </script>
+        hideAlert('error', () => { });
+        elm.removeAttribute('disabled')
+        elm.style.cursor = 'pointer';
+      }).finally(() => {
+      })
+    },2345)
+  </script>
 </body>
 
 </html>

@@ -96,7 +96,7 @@ a:hover {
 .head h1 {
     text-align: center;
     margin: 0 auto;
-    line-height: 110px;
+    /* line-height: 110px; */
 }
 
 .head_left {
@@ -229,9 +229,38 @@ body {
 
 .row {
     /*margin-left:-7px;margin-right:-8px;*/
-    display: grid;
-    grid-template-columns: 2.5fr 5fr 2.5fr;
-    gap: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    .row {
+        display: flex;
+        flex-direction: column;
+    }
+    .head {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h1{
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .row {
+        display: grid;
+        grid-template-columns: 2.5fr 5fr 2.5fr;
+        gap: 20px;
+    }
+    .head {
+        display: grid;
+    }
+    .head h1 {
+        text-align: center;
+        margin: 0 auto;
+        line-height: 110px;
+    }
+
 }
 
 /* .row>div {padding-left:7px;padding-right:8px;} */
